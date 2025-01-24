@@ -10,8 +10,16 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 
 const columns = [
-    { field: 'id', headerName: 'Requirement ID', width: 150 },
-    { field: 'name', headerName: 'Requirement Description', width: 150, flex: 1 },
+    { field: 'id', width: 150, renderHeader: () => (
+        <h1 className="font-semibold">
+          {'Requirement ID'}
+        </h1>
+      ), },
+    { field: 'name', width: 150, flex: 1, renderHeader: ()=>(
+        <h1 className="font-semibold">
+          {'Requirement Description'}
+        </h1>
+    ), },
   ];
 
 const MainPage = ({ continueFunction, data, setData }) => { 
@@ -64,7 +72,7 @@ const MainPage = ({ continueFunction, data, setData }) => {
     return (
         <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px] gap-4">
                     <HeaderComponent title={"Welcome to R2CG"} subtitle={"Please upload the requirements document"}/>
-                    <div className="mt-4 w-full h-max">
+                    <div className="mt-2 w-full h-max">
                         {file===null? <Button component="label" role={undefined} variant="contained" fullWidth startIcon={<CloudUploadIcon/>} style={{ backgroundColor: '#2a4fa7'}}>
                             Upload File
                             <VisuallyHiddenInput
@@ -78,12 +86,31 @@ const MainPage = ({ continueFunction, data, setData }) => {
                             {file.name}
                         </Button>}
                     </div>
-                    {showRequirements && <div className="flex flex-col w-full h-max mt-4">
-                        <h1 className="text-lg font-semibold mt-4">
+                    {showRequirements && <div className="flex flex-col w-full h-max mt-2">
+                        <h1 className="text-lg font-semibold">
                             Requirements found in the document
                         </h1>    
-                        <div className="flex flex-box w-full mt-2 h-52">
-                            <DataGrid rows={rows} columns={columns} pageSize={5} onRowSelectionModelChange={handleSelectionChange} checkboxSelection disableRowSelectionOnClick/>
+                        <div className="flex flex-box w-full mt-2 h-60">
+                            <DataGrid 
+                            rows={rows} 
+                            columns={columns} 
+                            pageSize={5} 
+                            onRowSelectionModelChange={handleSelectionChange} 
+                            checkboxSelection 
+                            disableRowSelectionOnClick
+                            rowHeight={35}
+                            columnHeaderHeight={35}
+                            hideFooter={true}
+                            sx={{
+                                    "& .MuiDataGrid-columnHeaders": { 
+                                        height: "30px" ,
+                                        fontWeight: "bold"// Reduce header padding
+                                    },
+                                    "& .MuiDataGrid-footerContainer": {
+                                        height: '30px',    // Remove unnecessary padding in footer
+                                    }
+                                }}
+                            />
                         </div>
                         <div className="flex flex-row w-full h-max mt-4">
                             <Button variant="contained" style={{ backgroundColor: '#1c287d', marginRight: '10px'}} onClick={()=>continueFunction()}>

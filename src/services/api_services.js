@@ -7,6 +7,8 @@ const axiosInstance = axios.create({
     }
 });
 
+
+
 export const getRequirementIds = async (filePath) => {
     const requesBody = { "file_path" : `C:/Users/I7997/Downloads/${filePath}` };
     try {
@@ -52,6 +54,20 @@ export const generateTestCode = async (data) => {
 export const logCode = async (data) => {
     try{
         const response = await axiosInstance.post('log-code/', data);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+export const compileCode = async (code, lang) => {
+    const requestBody = {
+        "code": code,
+        "language": lang,
+    };
+    try{
+        const response = await axiosInstance.post('code-compiler/', requestBody);
         return response.data;
     } catch (error) {
         console.error(error);

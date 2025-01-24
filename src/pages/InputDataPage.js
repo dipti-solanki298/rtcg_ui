@@ -72,7 +72,7 @@ const InputDataPage = ({action, data, setData, continueFunction, backFunction}) 
                     />
                 </Button>}
             </div>}
-            {(code!=="") && <CodeEditorComponent label={file.name} value={code} readOnly={true}/>}
+            {(code!=="") && <CodeEditorComponent label={file.name} value={code}/>}
             <div className="flex flex-row w-full h-max mt-8">
                 <Button variant="contained" disabled={language===null} style={{ backgroundColor: '#1c287d', marginRight: '10px'}} onClick={()=>continueFunction()}>
                     Generate
