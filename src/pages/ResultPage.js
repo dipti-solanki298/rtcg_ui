@@ -3,63 +3,32 @@ import React from "react";
 import HeaderComponent from "../common_components/HeaderComponent";
 import CodeEditorComponent from "../common_components/CodeEditorComponent";
 import { Button, CircularProgress } from "@mui/material";
-import { generateCode, logCode, generateTestCode } from "../services/api_services";
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import { CheckCircle, Cancel } from "@mui/icons-material";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import { generateDocs } from "../services/api_services";
+import DialogComponent from "../common_components/DialogComponent";
 
-const ResultPage = ({data, action, handleReset}) => {
+
+
+const ResultPage = ({project, type, continueFunction, backFunction, getOutput}) => {
     const [codeLog, setCodeLog] = React.useState({"actual_code": "", "modified_code": "", "feedback": ""});
     const [output, setOutput] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(true);
-    const [open, setOpen] = React.useState(false);
+    const [dial, setDial] = React.useState(false);
 
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
-    const handleFeedback = (response) => {
-        setCodeLog({...codeLog, "feedback": response});
-        setOpen(false);
-        console.log(`Feedback received: ${response}`);
-        setIsLoading(true);
-        const logData = async() => {  
+    React.useEffect(() => {
+        const getRequirement = async () => {
             try{
-                await logCode(codeLog);
-                handleReset();
-            } catch (error) {
-                console.error(error);  
+                const response = await generateDocs(type, project);
+                setOutput(response.documentation);
+                getOutput(response.documentation);
+            } catch (err) {
+                console.log('Unexpected Error Occurred', err);
             } finally {
                 setIsLoading(false);
             }
         }
-        logData();  
-      };
-    
-
-    React.useEffect(() => {
-        const generateOutput = async () => {
-            try{
-                let response;
-                if(action === "test"){
-                    response = await generateTestCode(data);
-                    setCodeLog({...codeLog, "actual_code":response.generated_testcase});
-                    setOutput(response.generated_testcase);
-                } else {
-                    response = await generateCode(data);
-                    setCodeLog({...codeLog, "actual_code":response.generated_code});
-                    setOutput(response.generated_code);
-                }
-                
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        generateOutput();
+        getRequirement();
+        console.log("placeholder");
     }, []);
 
     const handleCodeChange = (code) => {
@@ -73,10 +42,20 @@ const ResultPage = ({data, action, handleReset}) => {
         const blob = new Blob([output], { type: 'text/plain' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = action==="test"? 'test_generated_output.py' : 'generated_output.py';
+        link.download = 'srs_doc.docx';
         link.click();
     };
 
+    const handleClose = () => setDial(false);
+
+    const handleContinue = () => {
+        setDial(true);
+    }
+
+    const getFeedBack = (feedback) => {
+        setDial(false);
+        continueFunction();
+    }
 
     return (
     <div className="flex flex-col justify-evenly items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px]">
@@ -87,42 +66,20 @@ const ResultPage = ({data, action, handleReset}) => {
         </div>
       ) : (
         <>
-          <HeaderComponent title={'Output Generated'} subtitle={'The output has been generated successfully'} />
-          <CodeEditorComponent isOutput={true} label="Result Generated" value={output} valueChangeFunction={handleCodeChange} />
+          <HeaderComponent title={'Generated Requirements'} subtitle={'Based on the provided codebase the SRS document is generated'} />
+          <CodeEditorComponent isOutput={true} label="Requirements Document Generated" value={output} valueChangeFunction={handleCodeChange} />
           <div className="flex flex-row w-full justify-between items-center h-max mt-2">
-            <Button variant="contained" onClick={()=>handleOpen()} style={{ backgroundColor: '#1c287d', marginRight: '10px', marginTop: '4px' }}>
-                Done
-            </Button>
+            <div className="flex flex-row w-max justify-start items-center h-max gap-2">
+                <Button variant="contained" onClick={()=>handleContinue()} style={{ backgroundColor: '#1c287d', marginRight: '10px', marginTop: '4px' }}>
+                    Generate User Stories
+                </Button>
+                <Button variant="contained" onClick={()=>backFunction()} style={{ backgroundColor: '#9499a5', marginRight: '10px', marginTop: '4px' }}>
+                    Back
+                </Button>
+            </div>
             <Button variant="text" onClick={handleDownload} startIcon={<SaveAltIcon/>}>Download</Button>
-            <Dialog open={open} onClose={handleClose} disableBackdropClick={true} disableEscapeKeyDown={true}>
-                <DialogTitle className="font-semibold">Feedback</DialogTitle>
-                <DialogContent>
-                <p>Please provide feedback for the generated output</p>
-                </DialogContent>
-                <DialogActions className="justify-center" style={{ justifyContent: "center", marginBottom: "12px" }}>
-                {/* Accept Button */}
-                <Button
-                    onClick={() => handleFeedback("Accept")}
-                    color="success"
-                    variant="text"
-                    startIcon={<CheckCircle />}
-                >
-                    Accept
-                </Button>
-                
-                {/* Reject Button */}
-                <Button
-                    onClick={() => handleFeedback("Reject")}
-                    color="error"
-                    variant="text"
-                    startIcon={<Cancel />}
-                >
-                    Reject
-                </Button>
-                </DialogActions>
-            </Dialog>
           </div>
-          
+          <DialogComponent open={dial} closeFunction={handleClose} proceedFunction={getFeedBack}/>
         </>
       )}
     </div>

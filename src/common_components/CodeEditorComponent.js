@@ -42,23 +42,6 @@ const CodeEditorComponent = ({ label="Code Editor", value, valueChangeFunction, 
     };
   };
 
-  const handleCompile = async () => {
-    setIsLoading(true);
-    try{
-      const response = await compileCode(code, 'python');
-      if(response.error){
-        parseError(response.error);
-      }
-      if(response.output){
-        setOutput(response.output);
-        setOpflag(true);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
  
   return (
     <div className='flex flex-col justify-start items-start w-full h-max mt-2 border border-1 border-black rounded-md' style={{ overflow: 'auto' }}>
@@ -68,11 +51,6 @@ const CodeEditorComponent = ({ label="Code Editor", value, valueChangeFunction, 
                 isOutput && <div className='flex flex-box px-2 py-1 rounded-md' style={{ backgroundColor: "#ccf0d1" }}> <h1 style={{ color: "#026611"}}>Completed</h1> </div>
             }
             <div className='flex flex-row gap-2'>
-              {isLoading ? 
-                <CircularProgress color="secondary" size="30px"/>
-              :<IconButton onClick={handleCompile}>
-                <PlayArrowIcon/>
-              </IconButton>}
               {!readOnly && <IconButton onClick={toggleEdit}>
                 {isEditing ? <SaveIcon/> : <EditIcon/>}
               </IconButton>}

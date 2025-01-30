@@ -4,15 +4,19 @@ import MainPage from "./MainPage";
 import SelectActionPage from "./SelectActionPage";
 import InputDataPage from "./InputDataPage";
 import ResultPage from "./ResultPage";
+import GeneratedTestCasesPage from "./GeneratedTestCasesPage";
 
 
 const HomePage = () => { 
     const [step, setStep] = React.useState(0);
     const [data, setData] = React.useState({"file_path": null, "requirement_id": [], "code_file_path": null ,"language": null});
-    const [action, setAction] = React.useState(null);
+    const [requirements, setRequirements] = React.useState("");
+    const [projectName, setProjectName] = React.useState("");
+    const [coverage, setCoverage] = React.useState('small');
+    const [userStories, setUserStories] = React.useState([]);
 
     const handleContinue = () => {
-        if(step < 4){
+        if(step < 5){
             setStep(step+1);
         }
     };
@@ -30,13 +34,15 @@ const HomePage = () => {
     const getPageDesign = () => {
         switch(step){
             case 0:
-                return <MainPage continueFunction={handleContinue} data={data} setData={setData}/>;
+                return <MainPage continueFunction={handleContinue} projectName={projectName} setProjectName={setProjectName}/>;
             case 1:
-                return <SelectActionPage continueFunction={handleContinue} backFunction={handleBack} act={action} setAct={setAction}/>;
+                return <SelectActionPage continueFunction={handleContinue} backFunction={handleBack} project={projectName} getType={setCoverage}/>;
             case 2:
-                return <InputDataPage action={action} data={data} setData={setData} continueFunction={handleContinue} backFunction={handleBack}/>;
+                return <ResultPage project={projectName} type={coverage} continueFunction={handleContinue} backFunction={handleBack} getOutput={setRequirements}/>;
             case 3:
-                return <ResultPage action={action} data={data} handleReset={handleCancel}/>;
+                return <InputDataPage requirements={requirements} setStories={setUserStories} continueFunction={handleContinue} backFunction={handleBack}/>;
+            case 4:
+                return <GeneratedTestCasesPage selectedStories={userStories} handleDone={handleCancel} handleBack={handleBack}/>
             default:
                 return <h1>Page Not Found</h1>;
         }

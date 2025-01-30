@@ -9,25 +9,34 @@ const axiosInstance = axios.create({
 
 
 
-export const getRequirementIds = async (filePath) => {
-    const requesBody = { "file_path" : `C:/Users/I7997/Downloads/${filePath}` };
+export const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file); 
+  
     try {
-        const response = await axiosInstance.post('get-requirement-ids/', requesBody);
-        return response.data;
+      const response = await axiosInstance.post('upload-extract/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', 
+          'accept': 'application/json',
+        },
+      });
+  
+      console.log('Response from server:', response.data);
+      return response.data;
     } catch (error) {
-        console.error(error);
-        return [];
+      console.error('Error uploading file:', error);
+      return null;
     }
-}
+};
 
-export const generateCode = async (data) => {
+export const analyzeProject = async (projectName) => {
     const requestBody = {
-        "requirement_id": data.requirement_id,
-        "language": data.language,
-        "file_path": data.file_path,
+        "project_name": projectName,
     };
     try {
-        const response = await axiosInstance.post('generate-code/', requestBody);
+        const response = await axiosInstance.post('analyze_project/', requestBody, {
+            responseType: 'arraybuffer',
+        });
         return response.data;
     } catch (error) {
         console.error(error);
@@ -35,15 +44,19 @@ export const generateCode = async (data) => {
     }
 }
 
-export const generateTestCode = async (data) => {
+export const generateDocs = async (type, projectName) => {
     const requestBody = {
-        "requirement_id": data.requirement_id,
-        "language": data.language,
-        "file_path": data.file_path,
-        "code_file_path": data.code_file_path,
+        "project_name": projectName,
     };
     try {
-        const response = await axiosInstance.post('generate-test-code/', requestBody);
+        let response;
+        if(type==='small'){
+            response = await axiosInstance.post('small-generate-docs/', requestBody);
+        } else if(type==='medium'){
+            response = await axiosInstance.post('medium-generate-docs/', requestBody);
+        } else {
+            response = await axiosInstance.post('large-generate-docs/', requestBody);
+        }
         return response.data;
     } catch (error) {
         console.error(error);
@@ -51,9 +64,12 @@ export const generateTestCode = async (data) => {
     }
 }
 
-export const logCode = async (data) => {
+export const generateUserStories = async (requirements) => {
+    const requestBody = {
+        "requirements": requirements
+    };
     try{
-        const response = await axiosInstance.post('log-code/', data);
+        const response = await axiosInstance.post('generate-user-stories/', requestBody);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -61,13 +77,10 @@ export const logCode = async (data) => {
     }
 }
 
-export const compileCode = async (code, lang) => {
-    const requestBody = {
-        "code": code,
-        "language": lang,
-    };
+export const generateTestCases = async (data) => {
+    const requestBody = { "user_stories": data };
     try{
-        const response = await axiosInstance.post('code-compiler/', requestBody);
+        const response = await axiosInstance.post('generate-test-scenarios/', requestBody);
         return response.data;
     } catch (error) {
         console.error(error);
