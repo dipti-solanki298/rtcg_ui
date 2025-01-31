@@ -122,12 +122,21 @@ const GeneratedTestCasesPage = ({selectedStories, handleDone, handleBack}) => {
     }, []);
 
     const handleDownload = () => {
+        const escapeCsvValue = value => {
+            if (Array.isArray(value)) {
+                return `"${value.join(',')}"`; 
+            }
+            if (value && (value.includes(',') || value.includes('\n'))) {
+                return `"${value.replace(/"/g, '""')}"`; 
+            }
+            return value;
+        };
         const csvRows = [];
         const headers = columns.map(col => col.headerName);
         csvRows.push(headers.join(','));
     
         rows.forEach(row => {
-            const rowValues = columns.map(col => row[col.field]);
+            const rowValues = columns.map(col => escapeCsvValue(row[col.field]));
             csvRows.push(rowValues.join(','));
         });
     

@@ -69,16 +69,18 @@ const SelectActionPage = ({ continueFunction, backFunction, project, getType }) 
                 {/* {imgURL && <img src={imgURL} alt="Blob" style={{ width:"200px", height:"auto" }}/>} */}
                 <Button variant="text" onClick={()=> downloadGraph()}>Download</Button>
             </div>
-            <div className="flex flex-col w-full h-max justify-start items-start gap-2">
+            {/* <div className="flex flex-col w-full h-max justify-start items-start gap-2">
                 <h1>Select type of coverage to generate requirements</h1>
                 <div className="flex flex-row h-max w-full justify-start items-center gap-2">
                     <Chip label="Small" variant={type==='small'? "filled" : "outlined"} onClick={()=>updateAction('small')} style={{ minWidth: '6rem', minHeight: '4rem', backgroundColor: type === 'small' ? '#1f85c8' : 'transparent', color:type === 'small' ? 'white' : 'black' }}/> 
                     <Chip label="Medium" variant={type==='medium'? "filled" : "outlined"} onClick={()=>updateAction('medium')} style={{ minWidth: '6rem', minHeight: '4rem', backgroundColor: type === 'medium' ? '#1f85c8' : 'transparent', color:type === 'medium' ? 'white' : 'black' }}/>
                     <Chip label="Large" variant={type==='large'? "filled" : "outlined"} onClick={()=>updateAction('large')} style={{ minWidth: '6rem', minHeight: '4rem', backgroundColor: type === 'large' ? '#1f85c8' : 'transparent', color:type === 'large' ? 'white' : 'black' }}/>
                 </div>
+            </div> */}
+            <div className="flex flex-col w-full h-max justify-start items-start gap-1">
+                <h1>Please click continue to generate the requirements document</h1>
             </div>
-            
-            <div className="flex flex-row w-full h-max mt-16">
+            <div className="flex flex-row w-full h-max mt-4">
                 <Button variant="contained" style={{ backgroundColor: '#1c287d', marginRight: '10px'}} onClick={()=>continueFunction()}>
                     Continue
                 </Button>   

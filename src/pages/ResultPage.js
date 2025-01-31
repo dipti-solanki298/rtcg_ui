@@ -42,7 +42,7 @@ const ResultPage = ({project, type, continueFunction, backFunction, getOutput}) 
         const blob = new Blob([output], { type: 'text/plain' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'srs_doc.docx';
+        link.download = 'srs_doc.rtf';
         link.click();
     };
 

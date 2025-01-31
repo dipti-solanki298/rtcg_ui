@@ -12,7 +12,7 @@ const HomePage = () => {
     const [data, setData] = React.useState({"file_path": null, "requirement_id": [], "code_file_path": null ,"language": null});
     const [requirements, setRequirements] = React.useState("");
     const [projectName, setProjectName] = React.useState("");
-    const [coverage, setCoverage] = React.useState('small');
+    const [coverage, setCoverage] = React.useState('large');
     const [userStories, setUserStories] = React.useState([]);
 
     const handleContinue = () => {
