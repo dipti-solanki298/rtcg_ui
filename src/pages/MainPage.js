@@ -48,7 +48,7 @@ const MainPage = ({ continueFunction, projectName, setProjectName }) => {
 
     return (
         <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px] gap-4">
-                    <HeaderComponent title={"Welcome to R2CG"} subtitle={"Please upload the codebase below"}/>
+                    <HeaderComponent title={"Welcome to iCodoc"} subtitle={"Please upload the codebase below"}/>
                     <div className="flex flex-col justify-center items-center w-full h-80 border border-1 border-dashed rounded-md" style={{ borderColor: "#01014f", backgroundColor: "#ebebfa" }}>
                         <div className="flex flex-col w-full h-max justify-center items-center">
                             {file===null?

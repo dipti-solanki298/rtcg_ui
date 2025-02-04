@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import backgroundImage from '../assets/login_bg.jpg';
+import backgroundImage from '../assets/login_bg.jpeg';
 import TextfieldComponent from '../common_components/TextfieldComponent';
 import ButtonComponent from '../common_components/ButtonComponent';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,7 @@ return (
             <div className="absolute inset-0 bg-white opacity-25"></div>
             <div className="relative z-10 flex items-center justify-center h-full">
                 <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-80">
-                    <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: "#2f42a1" }}>R2CG</h2>
+                    <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: "#2f42a1" }}>iCodoc</h2>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-thin mb-2" htmlFor="email">
                             Email
