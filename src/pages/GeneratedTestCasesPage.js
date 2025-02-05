@@ -123,13 +123,15 @@ const GeneratedTestCasesPage = ({selectedStories, handleDone, handleBack}) => {
 
     const handleDownload = () => {
         const escapeCsvValue = value => {
+            const stringValue = String(value); 
+
             if (Array.isArray(value)) {
                 return `"${value.join(',')}"`; 
             }
-            if (value && (value.includes(',') || value.includes('\n'))) {
-                return `"${value.replace(/"/g, '""')}"`; 
+            if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
+                return `"${stringValue.replace(/"/g, '""')}"`; 
             }
-            return value;
+            return stringValue;
         };
         const csvRows = [];
         const headers = columns.map(col => col.headerName);

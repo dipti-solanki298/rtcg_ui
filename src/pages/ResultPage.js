@@ -18,9 +18,9 @@ const ResultPage = ({project, type, continueFunction, backFunction, getOutput}) 
     React.useEffect(() => {
         const getRequirement = async () => {
             try{
-                const response = await generateDocs(type, project);
-                setOutput(response.documentation);
-                getOutput(response.documentation);
+                // const response = await generateDocs(type, project);
+                setOutput("");
+                getOutput("");
             } catch (err) {
                 console.log('Unexpected Error Occurred', err);
             } finally {
