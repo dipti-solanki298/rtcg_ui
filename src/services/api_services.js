@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { responseData } from './sample_data';
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8000/',
@@ -69,8 +70,9 @@ export const generateUserStories = async (requirements) => {
         "requirements": requirements
     };
     try{
-        const response = await axiosInstance.post('generate-user-stories/', requestBody);
-        return response.data;
+        // const response = await axiosInstance.post('generate-user-stories/', requestBody);
+        // return response.data;
+        return responseData;
     } catch (error) {
         console.error(error);
         return [];

@@ -58,44 +58,6 @@ const columns = [
       },
     },
   ];
-  
-//   const rows = [
-//     {
-//       id: 1,
-//       task_id: 1942,
-//       title: "Extract Requirement Details by ID from PDF",
-//       scenario_name: "Valid Requirement ID Extraction",
-//       description: "Verify that the system correctly extracts requirement details when a valid ID is provided.",
-//       preconditions: "A PDF document containing requirements with known IDs is available.",
-//       test_steps: "1. Input a valid requirement ID into the system.",
-//       expected_result: "The system returns a list containing a dictionary with the details of the specified requirement.",
-//       edge_cases: "- Requirement ID is located at the beginning, middle, or end of the document.",
-//     },
-//     {
-//       id: 2,
-//       task_id: 1942,
-//       title: "Extract Requirement Details by ID from PDF",
-//       scenario_name: "Multiple Valid ID Extraction",
-//       description: "Verify that the system can extract details for multiple valid IDs simultaneously.",
-//       preconditions: "A PDF document containing multiple requirements with known IDs is available.",
-//       test_steps: "1. Input a list of multiple valid requirement IDs into the system.",
-//       expected_result: "The system returns a list of dictionaries, each containing the details of the specified requirements.",
-//       edge_cases: "- IDs are non-sequential or scattered throughout the document.",
-//     },
-//     {
-//       id: 3,
-//       task_id: 1942,
-//       title: "Extract Requirement Details by ID from PDF",
-//       scenario_name: "Invalid Requirement ID Handling",
-//       description: "Verify that the system handles invalid requirement IDs gracefully.",
-//       preconditions: "A PDF document is available.",
-//       test_steps: "1. Input an invalid requirement ID into the system.",
-//       expected_result: "The system returns an empty list or an error message indicating that no details were found for the specified ID.",
-//       edge_cases: "- ID format is incorrect (e.g., special characters, too short/long).",
-//     },
-//     // Add the rest of the data here
-//   ];
-  
 
 const GeneratedTestCasesPage = ({selectedStories, handleDone, handleBack}) => {
     const [rows, setRows] = React.useState([]);
