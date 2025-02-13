@@ -66,46 +66,7 @@ const columns = [
           return <ul className="list-inside list-disc">{items}</ul>;
         },
       },
-    //   {
-    //     field: 'acceptance_criteria',
-    //     headerName: 'Acceptance Criteria',
-    //     width: 400,
-    //     flex: 1,
-    //     renderCell: (params) => {
-    //         const items = Array.isArray(params.value) 
-    //         ? params.value.map((item, index) => (
-    //             <li key={index} className="ml-4">{item}</li>
-    //         )) 
-    //         : params.value.split('\n').map((item, index) => (
-    //             <li key={index} className="ml-4">{item}</li>
-    //         ));
-
-    //         return <ul className="list-inside">{items}</ul>;
-    //     },
-    //     headerClassName: 'font-bold',
-    //   },
   ];
-  
-// const rows = [
-//     {
-//       id: 1757,
-//       task_id: 1757,
-//       title: 'Restrict Access to Sensitive Endpoints',
-//       story_explanation:
-//         'As a security officer, I want the system to restrict access to sensitive endpoints and data through authentication and authorization mechanisms so that only authorized users can access critical system functions.',
-//       acceptance_criteria:
-//         '- Sensitive endpoints require user authentication for access.\n- Authorization levels determine access to specific system functions.\n- Access attempts are logged for auditing purposes.\n- The system supports multi-factor authentication for enhanced security.',
-//     },
-//     {
-//       id: 6412,
-//       task_id: 6412,
-//       title: 'Monitor Logs for Suspicious Activities',
-//       story_explanation:
-//         'As a security officer, I want the system to continuously monitor logs for suspicious activities and implement alerting mechanisms so that potential security breaches are detected and addressed promptly.',
-//       acceptance_criteria:
-//         '- The system analyzes logs in real-time for suspicious patterns.\n- Alerts are generated for activities that deviate from normal behavior.\n- Security personnel are notified immediately of potential threats.\n- Logs are stored securely for future forensic analysis.',
-//     },
-// ];
 const InputDataPage = ({generatedScenarios, selectedLLM, continueFunction, backFunction}) => {
     const [isLoading, setLoading] = React.useState(true);
     const [rows, setRows] = React.useState({});

@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "iCodoc",
+  "name": "Code to document generator",
   "icons": [
     {
       "src": "favicon.ico",

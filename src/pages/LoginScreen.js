@@ -3,16 +3,31 @@ import backgroundImage from '../assets/login_bg.jpeg';
 import TextfieldComponent from '../common_components/TextfieldComponent';
 import ButtonComponent from '../common_components/ButtonComponent';
 import { useNavigate } from 'react-router-dom';
+import { Snackbar, Alert } from '@mui/material';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Logging in with:', email, password);
-    navigate('/home');
+    if(email === 'demo_user' || password === 'P@sswOrd123$') {
+        e.preventDefault();
+        console.log('Logging in with:', email, password);
+        navigate('/home');
+    } else {
+        setOpen(true);
+        e.preventDefault();
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   };
 
 return (
@@ -23,7 +38,7 @@ return (
                     <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: "#2f42a1" }}>iCodoc</h2>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-thin mb-2" htmlFor="email">
-                            Email
+                            Username
                         </label>
                         <TextfieldComponent value={email} onChangeFunction={setEmail} />
                     </div>
@@ -34,14 +49,13 @@ return (
                         <TextfieldComponent value={password} onChangeFunction={setPassword} type='password'/>
                     </div>
                     <div className="flex items-center justify-between">
-                        {/* <button
-                            type="submit"
-                            className="text-white font-normal py-2 px-4 rounded focus:outline-none focus:shadow-outline" style={{ backgroundColor: '#1fbdc7' }}
-                        >
-                            Login
-                        </button> */}
                         <ButtonComponent buttonText="Login" buttonColor="#1fbdc7" onClickFunction={handleSubmit} textColor="white"/>
                     </div>
+                    <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                        <Alert variant="filled" severity="error">
+                            Incorrect Username or Password
+                        </Alert>
+                    </Snackbar>
                 </form>
             </div>
         </div>

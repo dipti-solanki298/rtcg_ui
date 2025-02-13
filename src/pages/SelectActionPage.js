@@ -4,6 +4,7 @@ import HeaderComponent from "../common_components/HeaderComponent";
 import { analyzeProject } from "../services/api_services";
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
+import { saveAs } from "file-saver";
 
 const SelectActionPage = ({ continueFunction, backFunction, project, llmChoice, getDocumentsList, getMetaDocumentation }) => {
 
@@ -16,16 +17,10 @@ const SelectActionPage = ({ continueFunction, backFunction, project, llmChoice, 
         const getImagePath = async() => {
             try{
                 const response = await analyzeProject(project, llmChoice);
-                console.log(response);// This should be an ArrayBuffer or Blob
+                console.log(response);
                 getDocumentsList(response.document_list);
                 getMetaDocumentation(response.meta_documentation);
                 setImgURl(response.uml_image_url);
-                // const blob = new Blob([response], { type: 'image/png' });
-                // const objURL = URL.createObjectURL(blob);
-
-                // setImgURl(objURL);
-
-                // setImgPath(blob); 
             } catch (err){
                 console.log('unable analyze project', err);
             } finally {
@@ -37,12 +32,18 @@ const SelectActionPage = ({ continueFunction, backFunction, project, llmChoice, 
     },[]);
 
     const downloadGraph = () => {
-        const link = document.createElement('a');
-        link.href = imgURL;  // This is the Blob URL
-        link.download = 'uml_diagram.png';  // Filename for the download
-        document.body.appendChild(link);  // Append link to body
-        link.click();  // Trigger the download
-        document.body.removeChild(link);  // Clean up the link
+        if (imgURL) {
+            // Create a fetch request to get the image as a Blob
+            fetch(imgURL)
+                .then(response => response.blob())
+                .then(blob => {
+                    // Use the saveAs function to trigger the download
+                    saveAs(blob, 'uml_diagram.png');
+                })
+                .catch(error => {
+                    console.log('Error downloading image:', error);
+                });
+        }
       };
     
 
@@ -51,7 +52,7 @@ const SelectActionPage = ({ continueFunction, backFunction, project, llmChoice, 
             <HeaderComponent title={"Code Analysis Completed"} subtitle={"UML diagram has been generated"}/>
             <div className="flex flex-col w-full h-max justify-start items-start gap-1">
                 {imgURL && <img src={imgURL} alt="Blob" style={{ width:"auto", height:"auto" }}/>}
-                {/* <Button variant="text" onClick={()=> downloadGraph()}>Download</Button> */}
+                <Button variant="text" onClick={()=> downloadGraph()}>Download</Button>
             </div>
             <div className="flex flex-col w-full h-max justify-start items-start gap-1">
                 <h1>Please click continue to generate the test case scenarios</h1>
