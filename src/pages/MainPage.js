@@ -1,15 +1,16 @@
 import React from "react";
 import HeaderComponent from "../common_components/HeaderComponent";
-import { styled } from "@mui/material";
+import { Chip, Stack, styled } from "@mui/material";
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FolderZipOutlinedIcon from '@mui/icons-material/FolderZipOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
+import TextfieldComponent from "../common_components/TextfieldComponent";
 import { uploadFile } from "../services/api_services";
 
-const MainPage = ({ continueFunction, projectName, setProjectName }) => { 
+const MainPage = ({ continueFunction, setProjectName, setLlmType }) => { 
     const VisuallyHiddenInput = styled('input')({
             clip: 'rect(0 0 0 0)',
             clipPath: 'inset(50%)',
@@ -25,6 +26,9 @@ const MainPage = ({ continueFunction, projectName, setProjectName }) => {
     const [file, setFile] = React.useState(null);
     const [showRequirements, setShowRequirements] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+    const [llm, setLLM] = React.useState("");
+    const [type, setType] = React.useState("");
+    const [apiKey, setApiKey] = React.useState("");
 
     const handleUpload = async (event) => {
         console.log(event.target.files);
@@ -40,6 +44,23 @@ const MainPage = ({ continueFunction, projectName, setProjectName }) => {
             setIsLoading(false);
         }
     };
+
+    const handleTypeChange = (t) => {
+        if(t === type){
+            setType("");
+        } else {
+            setType(t);
+        }
+    }
+
+    const handleLLM = (model) => {
+        if(model === llm){
+            setLLM("");
+        } else {
+            setLLM(model);
+            setLlmType(model);
+        }
+    }
      
     const handleReset = () => {
         setFile(null);
@@ -49,7 +70,42 @@ const MainPage = ({ continueFunction, projectName, setProjectName }) => {
     return (
         <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px] gap-4">
                     <HeaderComponent title={"Welcome to iCodoc"} subtitle={"Please upload the codebase below"}/>
-                    <div className="flex flex-col justify-center items-center w-full h-80 border border-1 border-dashed rounded-md" style={{ borderColor: "#01014f", backgroundColor: "#ebebfa" }}>
+                    <div className="flex flex-col w-full h-max gap-1">
+                        <h1 className="text-sm">Select LLM type: </h1>
+                        <Stack direction="row" spacing={2}>
+                            <Chip label="Open Source" variant={type==="opensource"? "filled" : "outlined"} color={type==="opensource"? "primary" : "default"} style={{ minWidth: "100px" }} onClick={()=>handleTypeChange("opensource")} clickable/>
+                            <Chip label="Paid" variant={type==="paid"? "filled" : "outlined"} color={type==="paid"? "primary" : "default"} style={{ minWidth: "100px" }} onClick={()=>handleTypeChange("paid")} clickable/>
+                        </Stack>
+                    </div>
+                    {
+                        type==="opensource" && 
+                        <div className="flex flex-col w-full h-max gap-1">
+                            <h1 className="text-sm">Select model type: </h1>
+                            <Stack direction="row" spacing={2}>
+                                <Chip label="CodeStral" variant="default" style={{ minWidth: "100px" }} />
+                                <Chip label="Code Llama" variant="default" style={{ minWidth: "100px" }} />
+                                <Chip label="CodeQwen" variant={llm==="localhost"? "filled" : "outlined"} color={llm==="localhost"? "secondary" : "default"} style={{ minWidth: "100px" }} onClick={()=>handleLLM("localhost")} clickable/>
+                            </Stack>
+                        </div>
+                    }
+                    {
+                        type==="paid" && 
+                        <div className="flex flex-col w-full h-max gap-1">
+                            <h1 className="text-sm">Select model type: </h1>
+                            <Stack direction="row" spacing={2}>
+                                <Chip label="OpenAI" variant={llm==="openai"? "filled" : "outlined"} color={llm==="openai"? "secondary" : "default"} style={{ minWidth: "100px" }} onClick={()=>handleLLM("openai")} clickable/>
+                                <Chip label="Claude" variant="default" style={{ minWidth: "100px" }} />
+                            </Stack>
+                        </div>
+                    }
+                    {
+                        type==="paid" &&  
+                        <div className="flex flex-col w-full h-max gap-1">
+                            <h1 className="text-sm">API key: </h1>
+                            <TextfieldComponent value={apiKey} onChangeFunction={setApiKey} type="password"/>
+                        </div>
+                    }
+                    <div className="flex flex-col justify-center items-center w-full h-60 border border-1 border-dashed rounded-md" style={{ borderColor: "#01014f", backgroundColor: "#ebebfa" }}>
                         <div className="flex flex-col w-full h-max justify-center items-center">
                             {file===null?
                             <div className="flex flex-col w-full h-max justify-center items-center gap-2">

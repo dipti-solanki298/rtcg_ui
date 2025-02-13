@@ -9,7 +9,7 @@ import DialogComponent from "../common_components/DialogComponent";
 
 
 
-const ResultPage = ({project, type, continueFunction, backFunction, getOutput}) => {
+const ResultPage = ({selectedLLM, metaDocs, doneFunction, backFunction}) => {
     const [codeLog, setCodeLog] = React.useState({"actual_code": "", "modified_code": "", "feedback": ""});
     const [output, setOutput] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -18,9 +18,8 @@ const ResultPage = ({project, type, continueFunction, backFunction, getOutput}) 
     React.useEffect(() => {
         const getRequirement = async () => {
             try{
-                const response = await Promise.any(generateDocs(type, project));
+                const response = await generateDocs(metaDocs, selectedLLM);
                 setOutput(response.documentation);
-                getOutput(response.documentation);
             } catch (err) {
                 console.log('Unexpected Error Occurred', err);
             } finally {
@@ -54,7 +53,7 @@ const ResultPage = ({project, type, continueFunction, backFunction, getOutput}) 
 
     const getFeedBack = (feedback) => {
         setDial(false);
-        continueFunction();
+        doneFunction();
     }
 
     return (
@@ -62,7 +61,7 @@ const ResultPage = ({project, type, continueFunction, backFunction, getOutput}) 
       {isLoading ? (
         <div className="flex flex-col justify-center items-center h-full w-full">
           <CircularProgress />
-          {!output && <h1>Generating results, this may take a few seconds...</h1>}
+            <h1>Generating results, this may take a few seconds...</h1>
         </div>
       ) : (
         <>
@@ -71,7 +70,7 @@ const ResultPage = ({project, type, continueFunction, backFunction, getOutput}) 
           <div className="flex flex-row w-full justify-between items-center h-max mt-2">
             <div className="flex flex-row w-max justify-start items-center h-max gap-2">
                 <Button variant="contained" onClick={()=>handleContinue()} style={{ backgroundColor: '#1c287d', marginRight: '10px', marginTop: '4px' }}>
-                    Generate User Stories
+                    Done
                 </Button>
                 <Button variant="contained" onClick={()=>backFunction()} style={{ backgroundColor: '#9499a5', marginRight: '10px', marginTop: '4px' }}>
                     Back

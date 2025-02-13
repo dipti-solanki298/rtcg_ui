@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { responseData } from './sample_data';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8000/',
+    baseURL: 'http://localhost:8200/',
     headers: {
         'Content-Type': 'application/json',
     }
@@ -30,14 +29,13 @@ export const uploadFile = async (file) => {
     }
 };
 
-export const analyzeProject = async (projectName) => {
+export const analyzeProject = async (projectName, llm_choice) => {
     const requestBody = {
         "project_name": projectName,
+        "llm_choice": llm_choice,
     };
     try {
-        const response = await axiosInstance.post('analyze_project/', requestBody, {
-            responseType: 'arraybuffer',
-        });
+        const response = await axiosInstance.post('analyze_project/', requestBody);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -45,19 +43,13 @@ export const analyzeProject = async (projectName) => {
     }
 }
 
-export const generateDocs = async (type, projectName) => {
+export const generateDocs = async (documentText, llmChoice) => {
     const requestBody = {
-        "project_name": projectName,
+        "documentation_text": documentText,
+        "llm_choice": llmChoice,
     };
     try {
-        let response;
-        if(type==='small'){
-            response = await axiosInstance.post('small-generate-docs/', requestBody);
-        } else if(type==='medium'){
-            response = await axiosInstance.post('medium-generate-docs/', requestBody);
-        } else {
-            response = await axiosInstance.post('large-generate-docs/', requestBody);
-        }
+        const response = await axiosInstance.post('generate-documentation/', requestBody);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -65,24 +57,28 @@ export const generateDocs = async (type, projectName) => {
     }
 }
 
-export const generateUserStories = async (requirements) => {
+export const generateUserStories = async (scenarioList, llm_choice) => {
     const requestBody = {
-        "requirements": requirements
+        "list_test_scenarios": scenarioList,
+        "llm_choice": llm_choice,
     };
     try{
-        // const response = await axiosInstance.post('generate-user-stories/', requestBody);
-        // return response.data;
-        return responseData;
+        const response = await axiosInstance.post('generate-user-stories/', requestBody);
+        return response.data;
+        //return responseData;
     } catch (error) {
         console.error(error);
         return [];
     }
 }
 
-export const generateTestCases = async (data) => {
-    const requestBody = { "user_stories": data };
+export const generateTestCases = async (llm_choice, documents_list) => {
+    const requestBody = { 
+        "llm_choice": llm_choice,
+        "document_list": documents_list,
+    };
     try{
-        const response = await axiosInstance.post('generate-test-scenarios/', requestBody);
+        const response = await axiosInstance.post('generate-test-scenarios', requestBody);
         return response.data;
     } catch (error) {
         console.error(error);

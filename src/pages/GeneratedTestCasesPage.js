@@ -7,8 +7,7 @@ import { generateTestCases } from "../services/api_services";
 import DialogComponent from "../common_components/DialogComponent";
 
 const columns = [
-    { field: "task_id", headerName: "Task ID", width: 150 },
-    { field: "title", headerName: "Title", width: 250 },
+    { field: "scenario_id", headerName: "Scenario ID", width: 150 },
     { field: "scenario_name", headerName: "Scenario Name", width: 200 },
     { field: "description", headerName: "Description", width: 350 },
     { field: "preconditions",
@@ -59,7 +58,7 @@ const columns = [
     },
   ];
 
-const GeneratedTestCasesPage = ({selectedStories, handleDone, handleBack}) => {
+const GeneratedTestCasesPage = ({documentList, selectedLLM, getScenarioList, continueFunction, handleBack}) => {
     const [rows, setRows] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [dial, setDial] = React.useState(false);
@@ -67,13 +66,14 @@ const GeneratedTestCasesPage = ({selectedStories, handleDone, handleBack}) => {
     React.useEffect(()=>{
         const getTestCases = async () => {
             try{
-                console.log(selectedStories);
-                const response = await generateTestCases(selectedStories);
+                console.log(documentList);
+                const response = await generateTestCases(selectedLLM, documentList);
                 const rowsWithIds = response.data.map((row, index) => ({
                     ...row,
                     id: index, // You can use index, or generate a unique id with a library
                   }));
                 setRows(rowsWithIds);
+                getScenarioList(response.data);
             } catch (error) {
                 console.log("Unable to generate test cases", error);
             } finally {
@@ -108,7 +108,7 @@ const GeneratedTestCasesPage = ({selectedStories, handleDone, handleBack}) => {
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'test_cases.csv';
+        link.download = 'test_scenarios.csv';
         link.click();
     };
     
@@ -120,12 +120,12 @@ const GeneratedTestCasesPage = ({selectedStories, handleDone, handleBack}) => {
 
     const getFeedBack = (feedback) => {
         setDial(false);
-        handleDone();
+        continueFunction();
     }
 
     return (
         <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px] gap-2">
-            <HeaderComponent title="Generated Test Cases" subtitle="Test cases for the selected user stories are listed below"/>
+            <HeaderComponent title="Generated Test Scenarios" subtitle="Test scenarios are generated for the uploaded codebase"/>
             <div className="flex flex-box w-full h-max bg-white rounded-lg p-2 shadow-md">
                 <DataGrid
                 rows={rows}
@@ -144,7 +144,7 @@ const GeneratedTestCasesPage = ({selectedStories, handleDone, handleBack}) => {
             <div className="flex flex-row w-full justify-between items-center h-max mt-2">
             <div className="flex flex-row w-max justify-start items-center h-max gap-2">
                 <Button variant="contained" onClick={handleContinue} style={{ backgroundColor: '#1c287d', marginRight: '10px', marginTop: '4px' }}>
-                    Done
+                    Generate User Stories
                 </Button>
                 <Button variant="contained" onClick={handleBack} style={{ backgroundColor: '#9499a5', marginRight: '10px', marginTop: '4px' }}>
                     Back

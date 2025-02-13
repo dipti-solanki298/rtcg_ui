@@ -12,33 +12,78 @@ const columns = [
     {
         field: 'story_explanation',
         headerName: 'Story Explanation',
-        width: 600,
+        width: 300,
         editable: true,
-        flex: 1, // Allow the column to be flexible and adjust with content
         renderCell: (params) => (
           <div className="flex flex-box h-max overflow-auto whitespace-normal break-words">{params.value}</div>
         ),
         // Custom styling to ensure text wrapping
         headerClassName: 'font-bold',
       },
-      {
-        field: 'acceptance_criteria',
-        headerName: 'Acceptance Criteria',
-        width: 400,
-        flex: 1,
+      { field: "preconditions",
+        headerName: "Preconditions",
+        width: 300, 
         renderCell: (params) => {
-            const items = Array.isArray(params.value) 
-            ? params.value.map((item, index) => (
-                <li key={index} className="ml-4">{item}</li>
-            )) 
-            : params.value.split('\n').map((item, index) => (
-                <li key={index} className="ml-4">{item}</li>
-            ));
-
-            return <ul className="list-inside">{items}</ul>;
+          const items = Array.isArray(params.value) 
+          ? params.value.map((item, index) => (
+              <li key={index} className="ml-4">{item}</li>
+          )) 
+          : params.value.split('\n').map((item, index) => (
+              <li key={index} className="ml-4">{item}</li>
+          ));
+  
+          return <ul className="list-inside list-disc">{items}</ul>;
         },
-        headerClassName: 'font-bold',
       },
+      { field: "steps", 
+        headerName: "Test Steps", 
+        width: 350,
+        renderCell: (params) => {
+          const items = Array.isArray(params.value) 
+          ? params.value.map((item, index) => (
+              <li key={index} className="ml-4">{item}</li>
+          )) 
+          : params.value.split('\n').map((item, index) => (
+              <li key={index} className="ml-4">{item}</li>
+          ));
+  
+          return <ul className="list-inside list-disc">{items}</ul>;
+          },
+      },
+      { field: "expected_result", headerName: "Expected Result", width: 300 },
+      { field: "edge_cases", 
+        headerName: "Edge Cases", 
+        width: 300,
+        renderCell: (params) => {
+          const items = Array.isArray(params.value) 
+          ? params.value.map((item, index) => (
+              <li key={index} className="ml-4">{item}</li>
+          )) 
+          : params.value.split('\n').map((item, index) => (
+              <li key={index} className="ml-4">{item}</li>
+          ));
+  
+          return <ul className="list-inside list-disc">{items}</ul>;
+        },
+      },
+    //   {
+    //     field: 'acceptance_criteria',
+    //     headerName: 'Acceptance Criteria',
+    //     width: 400,
+    //     flex: 1,
+    //     renderCell: (params) => {
+    //         const items = Array.isArray(params.value) 
+    //         ? params.value.map((item, index) => (
+    //             <li key={index} className="ml-4">{item}</li>
+    //         )) 
+    //         : params.value.split('\n').map((item, index) => (
+    //             <li key={index} className="ml-4">{item}</li>
+    //         ));
+
+    //         return <ul className="list-inside">{items}</ul>;
+    //     },
+    //     headerClassName: 'font-bold',
+    //   },
   ];
   
 // const rows = [
@@ -61,7 +106,7 @@ const columns = [
 //         '- The system analyzes logs in real-time for suspicious patterns.\n- Alerts are generated for activities that deviate from normal behavior.\n- Security personnel are notified immediately of potential threats.\n- Logs are stored securely for future forensic analysis.',
 //     },
 // ];
-const InputDataPage = ({requirements, setStories, continueFunction, backFunction}) => {
+const InputDataPage = ({generatedScenarios, selectedLLM, continueFunction, backFunction}) => {
     const [isLoading, setLoading] = React.useState(true);
     const [rows, setRows] = React.useState({});
     const [dial, setDial] = React.useState(false);
@@ -69,10 +114,16 @@ const InputDataPage = ({requirements, setStories, continueFunction, backFunction
     React.useEffect(()=>{
         const getRequirements = async () => {
             try{
-                const response = await generateUserStories(requirements);
+                const response = await generateUserStories(generatedScenarios, selectedLLM);
                 const rowsWithIds = response.list_of_user_stories.map((row, index) => ({
-                    ...row,
-                    id: index, // You can use index, or generate a unique id with a library
+                    id: index, // Unique identifier for each row (you can replace `index` with a unique ID if available)
+                    task_id: row.serial_number, // Mapping serial number to 'task_id' field
+                    title: row.title, // Mapping the 'title' from the data to the grid column
+                    story_explanation: row.story_explanation, // Mapping the explanation to the grid column
+                    preconditions: row.acceptance_criteria[0]?.preconditions || [], // Extract preconditions from the acceptance criteria
+                    steps: row.acceptance_criteria[0]?.steps || [], // Extract steps from the acceptance criteria
+                    expected_result: row.acceptance_criteria[0]?.expected_result || '', // Extract expected result from the acceptance criteria
+                    edge_cases: row.acceptance_criteria[0]?.edge_cases || [], // Extract edge cases from the acceptance criteria
                   }));
                 setRows(rowsWithIds);
             } catch (error) {
@@ -114,10 +165,6 @@ const InputDataPage = ({requirements, setStories, continueFunction, backFunction
         link.click();
     };
 
-    const handleSelect = (selectionModel) => {
-        const selectedRows = selectionModel.map((id)=> rows.find((row)=> row.id===id));
-        setStories(selectedRows);
-    }
 
     const handleClose = () => setDial(false);
 
@@ -132,23 +179,26 @@ const InputDataPage = ({requirements, setStories, continueFunction, backFunction
 
     return (
         <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px] gap-2">
-                <HeaderComponent title="Generated User Stories" subtitle="Select user stories to generate detailed test cases."/>
-            <Box sx={{ height: 400, width: '100%' }}>
+                <HeaderComponent title="Generated User Stories" subtitle="User stories generated based on test scenarios are listed below."/>
+            <Box sx={{ height: "100%", width: '100%' }}>
                 <DataGrid
-                rows={rows}
-                columns={columns}
-                pageSize={5}
-                checkboxSelection
-                disableRowSelectionOnClick
-                disableSelectionOnClick={true}
-                getRowHeight={() => 'auto'} 
-                onRowSelectionModelChange={handleSelect}
-                />
+                                rows={rows}
+                                columns={columns}
+                                pageSize={5}
+                                rowsPerPageOptions={[5]}
+                                disableSelectionOnClick={true}   // Disable row selection on click
+                                checkboxSelection={false}        // Disable checkbox selection
+                                disableColumnMenu={true}         // Disable column menu (sorting, filtering)
+                                disableColumnFilter={true}       // Disable column filter
+                                disableColumnSelector={true}     // Disable column selector
+                                hideFooterSelectedRowCount={true}
+                                getRowHeight={() => 'auto'}  // Hide footer selected row count
+                                />
             </Box>
             <div className="flex flex-row w-full justify-between items-center h-max mt-2">
             <div className="flex flex-row w-max justify-start items-center h-max gap-2">
                 <Button variant="contained" onClick={handleContinue} style={{ backgroundColor: '#1c287d', marginRight: '10px', marginTop: '4px' }}>
-                    Generate Test Cases
+                    Generate Requirements Document
                 </Button>
                 <Button variant="contained" onClick={backFunction} style={{ backgroundColor: '#9499a5', marginRight: '10px', marginTop: '4px' }}>
                     Back

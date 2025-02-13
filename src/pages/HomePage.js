@@ -9,11 +9,11 @@ import GeneratedTestCasesPage from "./GeneratedTestCasesPage";
 
 const HomePage = () => { 
     const [step, setStep] = React.useState(0);
-    const [data, setData] = React.useState({"file_path": null, "requirement_id": [], "code_file_path": null ,"language": null});
-    const [requirements, setRequirements] = React.useState("");
+    const [llmChoice, setLlmChoice] = React.useState("openai");
     const [projectName, setProjectName] = React.useState("");
-    const [coverage, setCoverage] = React.useState('large');
-    const [userStories, setUserStories] = React.useState([]);
+    const [documentList, setDocumentList] = React.useState([]);
+    const [metaDocumentation, setMetaDocumentation] = React.useState(""); 
+    const [scenarioList, setScenarioList] = React.useState([]);
 
     const handleContinue = () => {
         if(step < 5){
@@ -34,15 +34,15 @@ const HomePage = () => {
     const getPageDesign = () => {
         switch(step){
             case 0:
-                return <MainPage continueFunction={handleContinue} projectName={projectName} setProjectName={setProjectName}/>;
+                return <MainPage continueFunction={handleContinue} setLlmType={setLlmChoice} setProjectName={setProjectName}/>;
             case 1:
-                return <SelectActionPage continueFunction={handleContinue} backFunction={handleBack} project={projectName} getType={setCoverage}/>;
+                return <SelectActionPage continueFunction={handleContinue} backFunction={handleBack} project={projectName} llmChoice={llmChoice} getDocumentsList={setDocumentList} getMetaDocumentation={setMetaDocumentation}/>;
             case 2:
-                return <ResultPage project={projectName} type={coverage} continueFunction={handleContinue} backFunction={handleBack} getOutput={setRequirements}/>;
+                return <GeneratedTestCasesPage documentList={documentList} selectedLLM={llmChoice} getScenarioList={setScenarioList} continueFunction={handleContinue} handleBack={handleBack}/>
             case 3:
-                return <InputDataPage requirements={requirements} setStories={setUserStories} continueFunction={handleContinue} backFunction={handleBack}/>;
+                return <InputDataPage generatedScenarios={scenarioList} selectedLLM={llmChoice} continueFunction={handleContinue} backFunction={handleBack}/>;
             case 4:
-                return <GeneratedTestCasesPage selectedStories={userStories} handleDone={handleCancel} handleBack={handleBack}/>
+                return <ResultPage selectedLLM={llmChoice} metaDocs={metaDocumentation} doneFunction={handleCancel} backFunction={handleBack}/>;
             default:
                 return <h1>Page Not Found</h1>;
         }
