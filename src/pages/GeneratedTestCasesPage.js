@@ -66,12 +66,24 @@ const GeneratedTestCasesPage = ({documentList, selectedLLM, getScenarioList, con
     const [loading, setLoading] = React.useState(true);
     const [dial, setDial] = React.useState(false);
 
+    const isValidTestCase = (testCase) => {
+        return (
+            typeof testCase.scenario_id === "number" &&
+            typeof testCase.scenario_name === "string" &&
+            typeof testCase.description === "string" &&
+            Array.isArray(testCase.preconditions) && testCase.preconditions.every(item => typeof item === "string") &&
+            Array.isArray(testCase.test_steps) && testCase.test_steps.every(item => typeof item === "string") &&
+            typeof testCase.expected_result === "string" &&
+            Array.isArray(testCase.edge_cases) && testCase.edge_cases.every(item => typeof item === "string")
+        );
+    };
+
     React.useEffect(()=>{
         const getTestCases = async () => {
             try{
                 console.log(documentList);
                 const response = await generateTestCases(selectedLLM, documentList);
-                const rowsWithIds = response.data.map((row, index) => ({
+                const rowsWithIds = response.data.filter(isValidTestCase).map((row, index) => ({
                     ...row,
                     id: index, // You can use index, or generate a unique id with a library
                   }));
