@@ -10,7 +10,7 @@ import Backdrop from '@mui/material/Backdrop';
 import TextfieldComponent from "../common_components/TextfieldComponent";
 import { uploadFile } from "../services/api_services";
 
-const MainPage = ({ continueFunction, setProjectName, setLlmType }) => { 
+const MainPage = ({ continueFunction, setProjectName, setLlmType, getlang }) => { 
     const VisuallyHiddenInput = styled('input')({
             clip: 'rect(0 0 0 0)',
             clipPath: 'inset(50%)',
@@ -28,13 +28,19 @@ const MainPage = ({ continueFunction, setProjectName, setLlmType }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [llm, setLLM] = React.useState("");
     const [type, setType] = React.useState("");
+    const [language, setLanguage] = React.useState("");
     const [apiKey, setApiKey] = React.useState("");
 
     const handleUpload = async (event) => {
         console.log(event.target.files);
         setFile(event.target.files[0]);
+        const maxSize = 20 * 1024 * 1024; // 20MB in bytes
+        if (event.target.files[0].size > maxSize) {
+            alert("File size exceeds the 20MB limit. Please upload a smaller file.");
+            return;
+        }
         setIsLoading(true);
-        try{
+        try{         
             await uploadFile(event.target.files[0]);
             setShowRequirements(true);
             setProjectName(event.target.files[0].name.split('.').slice(0, -1).join('.'));
@@ -61,6 +67,15 @@ const MainPage = ({ continueFunction, setProjectName, setLlmType }) => {
             setLlmType(model);
         }
     }
+
+    const handleLanguage = (lang) => {
+        if(lang === language){
+            setLanguage("");
+        }else {
+            setLanguage(lang);
+            getlang(lang);
+        }
+    }
      
     const handleReset = () => {
         setFile(null);
@@ -68,7 +83,7 @@ const MainPage = ({ continueFunction, setProjectName, setLlmType }) => {
     };
 
     return (
-        <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px] gap-4">
+        <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-8 border border-1 border-black rounded-md p-4 min-h-[500px] gap-4">
                     <HeaderComponent title={"Welcome to iCodoc"} subtitle={"Please upload the codebase below"}/>
                     <div className="flex flex-col w-full h-max gap-1">
                         <h1 className="text-sm">Select LLM type: </h1>
@@ -105,6 +120,14 @@ const MainPage = ({ continueFunction, setProjectName, setLlmType }) => {
                             <TextfieldComponent value={apiKey} onChangeFunction={setApiKey} type="password"/>
                         </div>
                     }
+                    <div className="flex flex-col w-full h-max gap-1">
+                        <h1 className="text-sm">Select project language: </h1>
+                        <Stack direction="row" spacing={2}>
+                            <Chip label="Python" variant={language==="python"? "filled" : "outlined"} color={language==="python"? "info" : "default"} style={{ minWidth: "100px" }} onClick={()=>handleLanguage("python")} clickable/>
+                            <Chip label="C#" variant={language==="csharp"? "filled" : "outlined"} color={language==="csharp"? "info" : "default"} style={{ minWidth: "100px" }} onClick={()=>handleLanguage("csharp")} clickable/>
+                            <Chip label="Java" variant={language==="java"? "filled" : "outlined"} color={language==="java"? "info" : "default"} style={{ minWidth: "100px" }} onClick={()=>handleLanguage("java")} clickable/>
+                        </Stack>
+                    </div>
                     <div className="flex flex-col justify-center items-center w-full h-60 border border-1 border-dashed rounded-md" style={{ borderColor: "#01014f", backgroundColor: "#ebebfa" }}>
                         <div className="flex flex-col w-full h-max justify-center items-center">
                             {file===null?

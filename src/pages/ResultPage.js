@@ -57,7 +57,7 @@ const ResultPage = ({selectedLLM, metaDocs, doneFunction, backFunction}) => {
     }
 
     return (
-    <div className="flex flex-col justify-evenly items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px]">
+    <div className="flex flex-col justify-evenly items-start h-[80%] w-[80%] m-auto mt-8 border border-1 border-black rounded-md p-4 min-h-[500px]">
       {isLoading ? (
         <div className="flex flex-col justify-center items-center h-full w-full">
           <CircularProgress />

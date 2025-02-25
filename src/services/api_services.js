@@ -29,10 +29,11 @@ export const uploadFile = async (file) => {
     }
 };
 
-export const analyzeProject = async (projectName, llm_choice) => {
+export const analyzeProject = async (projectName, llm_choice, language) => {
     const requestBody = {
         "project_name": projectName,
         "llm_choice": llm_choice,
+        "language": language
     };
     try {
         const response = await axiosInstance.post('analyze_project/', requestBody);

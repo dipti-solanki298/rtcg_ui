@@ -8,11 +8,12 @@ import DialogComponent from "../common_components/DialogComponent";
 
 const columns = [
     { field: "scenario_id", headerName: "Scenario ID", width: 150 },
-    { field: "scenario_name", headerName: "Scenario Name", width: 200 },
-    { field: "description", headerName: "Description", width: 350 },
+    { field: "scenario_name", editable: true, headerName: "Scenario Name", width: 200 },
+    { field: "description", editable: true, headerName: "Description", width: 350 },
     { field: "preconditions",
       headerName: "Preconditions",
-      width: 300, 
+      width: 300,
+      editable: true, 
       renderCell: (params) => {
         const items = Array.isArray(params.value) 
         ? params.value.map((item, index) => (
@@ -26,7 +27,8 @@ const columns = [
       },
     },
     { field: "test_steps", 
-      headerName: "Test Steps", 
+      headerName: "Test Steps",
+      editable: true, 
       width: 350,
       renderCell: (params) => {
         const items = Array.isArray(params.value) 
@@ -40,9 +42,10 @@ const columns = [
         return <ul className="list-inside list-disc">{items}</ul>;
         },
     },
-    { field: "expected_result", headerName: "Expected Result", width: 300 },
+    { field: "expected_result", editable: true, headerName: "Expected Result", width: 300 },
     { field: "edge_cases", 
       headerName: "Edge Cases", 
+      editable: true,
       width: 300,
       renderCell: (params) => {
         const items = Array.isArray(params.value) 
@@ -124,7 +127,7 @@ const GeneratedTestCasesPage = ({documentList, selectedLLM, getScenarioList, con
     }
 
     return (
-        <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px] gap-2">
+        <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-8 border border-1 border-black rounded-md p-4 min-h-[500px] gap-2">
             <HeaderComponent title="Generated Test Scenarios" subtitle="Test scenarios are generated for the uploaded codebase"/>
             <div className="flex flex-box w-full h-max bg-white rounded-lg p-2 shadow-md">
                 <DataGrid

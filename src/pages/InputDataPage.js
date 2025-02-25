@@ -8,7 +8,7 @@ import DialogComponent from "../common_components/DialogComponent";
 
 const columns = [
     { field: 'task_id', headerName: 'Story ID', width: 100 },
-    { field: 'title', headerName: 'Title', width: 200 },
+    { field: 'title', editable: true, headerName: 'Title', width: 200 },
     {
         field: 'story_explanation',
         headerName: 'Story Explanation',
@@ -22,7 +22,8 @@ const columns = [
       },
       { field: "preconditions",
         headerName: "Preconditions",
-        width: 300, 
+        width: 300,
+        editable: true, 
         renderCell: (params) => {
           const items = Array.isArray(params.value) 
           ? params.value.map((item, index) => (
@@ -38,6 +39,7 @@ const columns = [
       { field: "steps", 
         headerName: "Test Steps", 
         width: 350,
+        editable: true,
         renderCell: (params) => {
           const items = Array.isArray(params.value) 
           ? params.value.map((item, index) => (
@@ -50,10 +52,11 @@ const columns = [
           return <ul className="list-inside list-disc">{items}</ul>;
           },
       },
-      { field: "expected_result", headerName: "Expected Result", width: 300 },
+      { field: "expected_result", editable: true, headerName: "Expected Result", width: 300 },
       { field: "edge_cases", 
         headerName: "Edge Cases", 
         width: 300,
+        editable: true,
         renderCell: (params) => {
           const items = Array.isArray(params.value) 
           ? params.value.map((item, index) => (
@@ -139,7 +142,7 @@ const InputDataPage = ({generatedScenarios, selectedLLM, continueFunction, backF
     }
 
     return (
-        <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px] gap-2">
+        <div className="flex flex-col justify-start items-start h-[80%] w-[80%] m-auto mt-8 border border-1 border-black rounded-md p-4 min-h-[500px] gap-2">
                 <HeaderComponent title="Generated User Stories" subtitle="User stories generated based on test scenarios are listed below."/>
             <Box sx={{ height: "100%", width: '100%' }}>
                 <DataGrid

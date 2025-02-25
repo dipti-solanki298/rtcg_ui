@@ -6,7 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import { saveAs } from "file-saver";
 
-const SelectActionPage = ({ continueFunction, backFunction, project, llmChoice, getDocumentsList, getMetaDocumentation }) => {
+const SelectActionPage = ({ continueFunction, backFunction, project, llmChoice, language, getDocumentsList, getMetaDocumentation }) => {
 
     const [ loading, setLoading ] = useState(true);
     const [ imgURL, setImgURl ] = useState(null);
@@ -16,7 +16,7 @@ const SelectActionPage = ({ continueFunction, backFunction, project, llmChoice, 
         console.log(project);
         const getImagePath = async() => {
             try{
-                const response = await analyzeProject(project, llmChoice);
+                const response = await analyzeProject(project, llmChoice, language);
                 console.log(response);
                 getDocumentsList(response.document_list);
                 getMetaDocumentation(response.meta_documentation);
@@ -48,7 +48,7 @@ const SelectActionPage = ({ continueFunction, backFunction, project, llmChoice, 
     
 
     return (
-        <div className="flex flex-col justify-start items-start gap-4 h-[80%] w-[80%] m-auto mt-24 border border-1 border-black rounded-md p-4 min-h-[500px]">
+        <div className="flex flex-col justify-start items-start gap-4 h-[80%] w-[80%] m-auto mt-8 border border-1 border-black rounded-md p-4 min-h-[500px]">
             <HeaderComponent title={"Code Analysis Completed"} subtitle={"UML diagram has been generated"}/>
             <div className="flex flex-col w-full h-max justify-start items-start gap-1">
                 {imgURL && <img src={imgURL} alt="Blob" style={{ width:"auto", height:"auto" }}/>}
